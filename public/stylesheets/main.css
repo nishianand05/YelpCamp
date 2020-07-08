@@ -1,0 +1,22 @@
+/* Thumbnail image occupies full width */
+.thumbnail img{
+	width: 100%;
+}
+
+/* Thumbnail padding set to 0 */
+.thumbnail{
+	padding: 0;
+}
+
+/* Padding of caption in thumbnail set to 10px */
+.thumbnail .caption{
+	padding: 10px;
+}
+
+.delete-form {
+	display: inline;
+}
+textarea {
+	resize: none;
+	height: auto;
+}
