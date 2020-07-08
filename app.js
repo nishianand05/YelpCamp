@@ -23,7 +23,8 @@ var campgroundRoutes = require("./routes/campgrounds"),
 // Creating and using yelp_camp database 
 
 mongoose.set('useUnifiedTopology', true);
-mongoose.connect("mongodb://localhost:27017/yelp_camp_v12",{ useNewUrlParser: true });
+// mongoose.connect("mongodb://localhost:27017/yelp_camp_v12",{ useNewUrlParser: true });
+mongoose.connect("mongodb+srv://nishianand:lolhehe@cluster0.bwvdd.mongodb.net/yelpcamp?retryWrites=true&w=majority",{ useNewUrlParser: true });
 mongoose.set('useFindAndModify', false);
 
 
