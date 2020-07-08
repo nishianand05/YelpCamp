@@ -22,9 +22,9 @@ var campgroundRoutes = require("./routes/campgrounds"),
 
 // Creating and using yelp_camp database 
 
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp_v12"
 mongoose.set('useUnifiedTopology', true);
-mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true });
-// mongoose.connect("mongodb+srv://nishianand:lolhehe@cluster0.bwvdd.mongodb.net/yelpcamp?retryWrites=true&w=majority",{ useNewUrlParser: true });
+mongoose.connect(url,{ useNewUrlParser: true });
 mongoose.set('useFindAndModify', false);
 
 
