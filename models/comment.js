@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 
 var commentSchema = new mongoose.Schema({
 	text: String,
-	
+	createdAt: { type: Date, default: Date.now },
 // 	Associating comment and author
 	author: {
 		id: {
