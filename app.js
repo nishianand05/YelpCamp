@@ -17,6 +17,7 @@ var express = require("express"),
 
 var campgroundRoutes = require("./routes/campgrounds"),
 	commentRoutes = require("./routes/comments"),
+	reviewRoutes = require("./routes/reviews"),
 	indexRoutes = require("./routes/index");
 
 
@@ -81,6 +82,7 @@ app.use(function(req, res, next){
 
 app.use("/campgrounds",campgroundRoutes);
 app.use("/campgrounds/:id/comments",commentRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
 app.use("/",indexRoutes);
 
 // Listen method to start server
