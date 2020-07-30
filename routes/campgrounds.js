@@ -19,6 +19,9 @@ var middleware = require("../middleware");
 // INDEX ROUTE - Shows all campgrounds. Get route to Campgrounds page(index template).  
 
 router.get("/", function(req, res){
+	var perPage = 8;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
 	if(req.query.search){
 	const regex = new RegExp(escapeRegex(req.query.search),'gi');
 	Campground.find({name: regex}, function(err, allCampgrounds){
@@ -36,13 +39,20 @@ router.get("/", function(req, res){
 	});		
 	} else {
     // Getting all campgrounds from database   	
-	Campground.find({}, function(err, allCampgrounds){
+	Campground.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function(err, allCampgrounds){
+		Campground.countDocuments().exec(function (err, count) {
 		if(err || !allCampgrounds){
 			req.flash("error", "Cannot find campgrounds!");
 			console.log(err);
 		} else { 
             //Render index page(campgrounds page) and send data array to index page.
-			res.render("campgrounds/index", { campground: allCampgrounds, page: 'campgrounds'});}
+			res.render("campgrounds/index", { campground: allCampgrounds,
+											  page: 'campgrounds',
+											  current: pageNumber,
+											  pages: Math.ceil(count / perPage) });
+		}
+
+	});
 	});
    }
 });
@@ -140,19 +150,19 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function (req, res) {
             res.redirect("/campgrounds");
         } else {
             // deletes all comments associated with the campground
-            Comment.remove({"_id": {$in: campground.comments}}, function (err) {
+            Comment.deleteMany({"_id": {$in: campground.comments}}, function (err) {
                 if (err) {
                     console.log(err);
                     return res.redirect("/campgrounds");
                 }
                 // deletes all reviews associated with the campground
-                Review.remove({"_id": {$in: campground.reviews}}, function (err) {
+                Review.deleteMany({"_id": {$in: campground.reviews}}, function (err) {
                     if (err) {
                         console.log(err);
                         return res.redirect("/campgrounds");
                     }
                     //  delete the campground
-                    campground.remove();
+                    campground.deleteOne();
                     req.flash("success", "Campground deleted successfully!");
                     res.redirect("/campgrounds");
                 });
