@@ -24,17 +24,24 @@ router.get("/", function(req, res){
     var pageNumber = pageQuery ? pageQuery : 1;
 	if(req.query.search){
 	const regex = new RegExp(escapeRegex(req.query.search),'gi');
-	Campground.find({name: regex}, function(err, allCampgrounds){
+	Campground.find({name: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
+            Campground.countDocuments({name: regex}).exec(function(err, count){
 		if(err || !allCampgrounds){
 			req.flash("error", "Cannot find campgrounds!");
-			console.log(err);
+			return res.redirect("back");
 		} else { 
             //Render index page(campgrounds page) and send data array to index page.
 			if(allCampgrounds.length < 1){
 				req.flash("error", "The campground you searched for is not available!");
-				res.redirect("back");
+				return res.redirect("/campgrounds");
 			}
-				res.render("campgrounds/index", { campground: allCampgrounds, page: 'campgrounds'});}
+			res.render("campgrounds/index", { campground: allCampgrounds, 
+												  page: 'campgrounds',
+												  current: pageNumber,
+												  pages: Math.ceil(count / perPage),
+												  search: req.query.search });
+		}
+	});
 			
 	});		
 	} else {
@@ -49,7 +56,8 @@ router.get("/", function(req, res){
 			res.render("campgrounds/index", { campground: allCampgrounds,
 											  page: 'campgrounds',
 											  current: pageNumber,
-											  pages: Math.ceil(count / perPage) });
+											  pages: Math.ceil(count / perPage), 
+											  search: false});
 		}
 
 	});
